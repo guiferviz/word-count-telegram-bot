@@ -3,15 +3,15 @@ language: python
 python:
 - "2.7"
 
-env:
-- LIB_DIR=lib
-
 before_script:
 # Install Google AppEngine Python SDK
-- cd $LIB_DIR
+# Not installed in the build dir to avoid include it in the deploy
+- cd ..
 - wget https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.25.zip -nv
 - unzip -q google_appengine_1.9.25.zip
-- export PYTHONPATH="$(pwd)/google_appengine"
+- export GAE_PATH="$(pwd)/google_appengine"
+- export PYTHONPATH=$GAE_PATH:$PYTHONPATH
+- export PATH=$GAE_PATH:$PATH
 - cd $TRAVIS_BUILD_DIR
 
 install:
@@ -21,3 +21,10 @@ install:
 script:
 # Run all tests
 - python tests/suite.py
+
+after_success:
+# APP_TOKEN value can be obtainde from ~/.appcfg_oauth2_tokens local file.
+# Copy "refresh_token" value entry.
+- echo "Test Success!"
+- echo "Deploying..."
+- appcfg.py --oauth2_refresh_token=$APP_TOKEN --application=$APP_ID --version=$APP_VERSION update .
