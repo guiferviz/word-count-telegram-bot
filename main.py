@@ -4,7 +4,7 @@
 import webapp2
 
 import appengine_config
-from google.appengine.api import app_identity
+from google.appengine.api import modules
 
 import telegram
 
@@ -16,7 +16,9 @@ BOT = telegram.Bot(token=telegram_token.TOKEN)
 BOT_ME = BOT.getMe()
 
 # Setting the webhook (callback).
-HOST_URL = 'https://{}/'.format(app_identity.get_default_version_hostname())
+VERSION = modules.get_current_version_name()
+HOST_NAME = modules.get_hostname()
+HOST_URL = 'https://{}-dot-{}/'.format(VERSION, HOST_NAME)
 BOT.setWebhook(HOST_URL)
 
 
@@ -43,4 +45,3 @@ class MainPage(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([
     ('/.*', MainPage),
 ], debug=appengine_config.DEBUG)
- 
