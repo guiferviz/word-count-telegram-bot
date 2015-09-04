@@ -28,7 +28,7 @@ script:
 - python test_suite.py
 
 after_success:
-- rm lib
+- rm -r lib
 - pip install --upgrade --target=lib -r requirements.txt
 # APP_TOKEN value can be obtainde from ~/.appcfg_oauth2_tokens local file.
 # Copy "refresh_token" value entry.
