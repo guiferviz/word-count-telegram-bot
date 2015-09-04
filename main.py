@@ -37,13 +37,18 @@ class MainPage(webapp2.RequestHandler):
     def post(self):
         json_str = self.request.body
         logging.info("POST Body: " + json_str)
-        json_obj = json.loads(json_str)
-        update = telegram.Update.de_json(json_obj)
-        chat_id = update.message.chat.id
-        text = update.message.text.encode('utf-8')
-        if text != '':
-            logging.info("Message Text: " + text)
-            BOT.sendMessage(chat_id=chat_id, text=text)
+        try:
+            json_obj = json.loads(json_str)
+            update = telegram.Update.de_json(json_obj)
+            chat_id = update.message.chat.id
+            text = update.message.text.encode('utf-8')
+            if text != '':
+                logging.info("Message Text: " + text)
+                BOT.sendMessage(chat_id=chat_id, text=text)
+        except ValueError:
+            logging.error('No body or bad JSON body.')
+        except AttributeError:
+            logging.error('No correct attributes in JSON body.')
 
 app = webapp2.WSGIApplication([
     ('/' + telegram_token.TOKEN, MainPage),
