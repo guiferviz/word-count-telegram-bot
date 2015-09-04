@@ -18,16 +18,16 @@ install:
 # Install Python dependencies (using pip).
 - ./build.sh
 
-script:
-# Run all tests
-- python tests/suite.py
-
-after_success:
-- echo "Test Success!"
-- echo "Deploying..."
+before_script:
 # Put secret tokens in the code.
 # Replace YOUR-TELEGRAM-BOT-TOKEN string by the value of env var TELEGRAM_TOKEN.
 - sed -Ei "s/YOUR-TELEGRAM-BOT-TOKEN/$TELEGRAM_TOKEN/g" telegram_token.py
+
+script:
+# Run all tests
+- python test_suite.py
+
+after_success:
 # APP_TOKEN value can be obtainde from ~/.appcfg_oauth2_tokens local file.
 # Copy "refresh_token" value entry.
 - appcfg.py --oauth2_refresh_token=$APP_TOKEN --application=$APP_ID --version=$APP_VERSION update .
