@@ -1,10 +1,5 @@
 
-
-import logging
-import os
-import unittest
-import webtest
-
+# Warning! GAE SDK folder needs to be on the pythonpath.
 import dev_appserver
 
 # Fix the sys.path to include GAE extra paths.
@@ -12,7 +7,17 @@ dev_appserver.fix_sys_path()
 
 from google.appengine.ext import testbed
 
+# This import adds libraries in libs to the path.
 import main
+
+
+# NORMAL IMPORTS
+
+import logging
+import os
+import unittest
+
+import webtest
 
 
 # Folder where test will be search.
