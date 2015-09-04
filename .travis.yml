@@ -16,7 +16,7 @@ before_install:
 
 install:
 # Install Python dependencies (using pip).
-- ./build.sh
+- pip install --upgrade --target=lib -r dev_requirements.txt
 
 before_script:
 # Put secret tokens in the code.
@@ -28,6 +28,8 @@ script:
 - python test_suite.py
 
 after_success:
+- rm lib
+- pip install --upgrade --target=lib -r requirements.txt
 # APP_TOKEN value can be obtainde from ~/.appcfg_oauth2_tokens local file.
 # Copy "refresh_token" value entry.
 - appcfg.py --oauth2_refresh_token=$APP_TOKEN --application=$APP_ID --version=$APP_VERSION update .
