@@ -1,5 +1,6 @@
 
 
+import logging
 import os
 import unittest
 import webtest
@@ -29,6 +30,8 @@ class AppEngineTestBase(unittest.TestCase):
         self.testbed.activate()
         # Create app for testing handlers.
         self.testapp = webtest.TestApp(main.app)
+        # Not showing logging.
+        logging.disable(logging.CRITICAL)
 
     def tearDown(self):
         self.testbed.deactivate()
