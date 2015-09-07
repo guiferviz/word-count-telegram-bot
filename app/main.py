@@ -32,7 +32,7 @@ Words: %(words)s
 Lines: %(lines)s
 """
 
-RESPONSE_NO_TEXT = "Please, send me some text. " + telegram.Emoji.PAGE_FACING_UP
+RESPONSE_NO_TEXT = "Please, sent me some text. " + telegram.Emoji.PAGE_FACING_UP
 
 
 class MainPage(webapp2.RequestHandler):

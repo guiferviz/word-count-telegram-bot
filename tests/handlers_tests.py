@@ -4,6 +4,7 @@ import json
 from webtest import app
 from mock import patch
 
+import main
 import test_suite
 import telegram_token
 
@@ -50,8 +51,13 @@ class HandlersTests(test_suite.AppEngineTestBase):
         """
         json_str_body = json.dumps(utils.SAMPLE_TEXT_UPDATE.to_dict())
         self.testapp.post(BOT_URL, json_str_body)
+        text = main.RESPONSE_TEXT % {
+            "letters": 9,
+            "words": 1,
+            "lines": 1,
+        }
         mock_send_message.assert_called_once_with(chat_id=utils.SAMPLE_CHAT.id,
-                                                  text=utils.SAMPLE_TEXT)
+                                                  text=text)
 
     @patch('telegram.Bot.sendMessage')
     def test_sticker_message(self, mock_send_message):
@@ -60,4 +66,7 @@ class HandlersTests(test_suite.AppEngineTestBase):
         """
         json_str_body = json.dumps(utils.SAMPLE_STICKER_UPDATE.to_dict())
         self.testapp.post(BOT_URL, json_str_body)
-        self.assertFalse(mock_send_message.called)
+        # self.assertFalse(mock_send_message.called)
+        # We send and error message:
+        mock_send_message.assert_called_once_with(chat_id=utils.SAMPLE_CHAT.id,
+                                                  text=main.RESPONSE_NO_TEXT)
