@@ -68,7 +68,10 @@ def runAllTests():
     """
     loader = unittest.TestLoader()
     test_suite = loader.discover(TEST_DIR, pattern='*')
-    unittest.TextTestRunner(verbosity=2).run(test_suite)
+    runner = unittest.TextTestRunner(verbosity=2)
+    result = runner.run(test_suite)
+    exit_code = not result.wasSuccessful()
+    sys.exit(exit_code)
 
 
 # If it's the main file we run all the tests under 'tests' module.
