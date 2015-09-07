@@ -30,12 +30,12 @@ SAMPLE_TEXT_UPDATE = telegram.Update(update_id=1,
 
 # STICKER
 
-SAMPLE_STICKER_PHOTOSIZE = telegram.PhotoSize(file_id=0,
+SAMPLE_STICKER_PHOTOSIZE = telegram.PhotoSize(file_id='photosize_id',
                                               width=10,
                                               height=10,
                                               file_size=100)
 
-SAMPLE_STICKER = telegram.Sticker(file_id=0,
+SAMPLE_STICKER = telegram.Sticker(file_id='sticker_id',
                                   width=100,
                                   height=100,
                                   thumb=SAMPLE_STICKER_PHOTOSIZE,
