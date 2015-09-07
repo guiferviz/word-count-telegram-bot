@@ -3,33 +3,42 @@ language: python
 python:
 - "2.7"
 
+env:
+  global:
+    - APP_DIR=app
+    - LIB_DIR=$APP_DIR/lib
+    # In the travis environment must be the next variables:
+    # APP_ID: AppEngine application ID.
+    # APP_VERSION: AppEngine version of the deploy.
+    # APP_TOKEN: Refresh token of your Google account, that can be obtainde from
+    # ~/.appcfg_oauth2_tokens local file. Copy "refresh_token" value entry.
+    # TELEGRAM_TOKEN: token of your telegram bot.
+
 before_install:
 # Install Google AppEngine Python SDK.
-# Not installed in the build dir to avoid include it in the deploy.
-- cd ..
+# Not installed in the LIB_DIR to avoid include it in the deploy.
 - wget https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.25.zip -nv
 - unzip -q google_appengine_1.9.25.zip
 - export GAE_PATH="$(pwd)/google_appengine"
 - export PYTHONPATH=$GAE_PATH:$PYTHONPATH
 - export PATH=$GAE_PATH:$PATH
-- cd $TRAVIS_BUILD_DIR
 
 install:
 # Install Python dependencies (using pip).
-- pip install --upgrade --target=lib -r dev_requirements.txt
+- pip install --upgrade --target=$LIB_DIR -r dev_requirements.txt
 
 before_script:
 # Put secret tokens in the code.
-# Replace YOUR-TELEGRAM-BOT-TOKEN string by the value of env var TELEGRAM_TOKEN.
-- sed -Ei "s/YOUR-TELEGRAM-BOT-TOKEN/$TELEGRAM_TOKEN/g" telegram_token.py
+# Replace YOUR-TELEGRAM-BOT-TOKEN string in the file by the value of env var TELEGRAM_TOKEN.
+- sed -Ei "s/YOUR-TELEGRAM-BOT-TOKEN/$TELEGRAM_TOKEN/g" $APP_DIR/telegram_token.py
 
 script:
 # Run all tests
 - python test_suite.py
 
 after_success:
-- rm -r lib
-- pip install --upgrade --target=lib -r requirements.txt
-# APP_TOKEN value can be obtainde from ~/.appcfg_oauth2_tokens local file.
-# Copy "refresh_token" value entry.
-- appcfg.py --oauth2_refresh_token=$APP_TOKEN --application=$APP_ID --version=$APP_VERSION update .
+# Removing dev requirements and installing production requirements.
+- rm -r app/lib
+- pip install --upgrade --target=$LIB_DIR -r requirements.txt
+# Deploy
+- appcfg.py --oauth2_refresh_token=$APP_TOKEN --application=$APP_ID --version=$APP_VERSION update $APP_DIR
