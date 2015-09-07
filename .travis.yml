@@ -7,6 +7,7 @@ env:
   global:
     - APP_DIR=app
     - LIB_DIR=$APP_DIR/lib
+    - GAE_SDK_VERSION="1.9.26"
     # In the travis environment must be the next variables:
     # APP_ID: AppEngine application ID.
     # APP_VERSION: AppEngine version of the deploy.
@@ -17,8 +18,8 @@ env:
 before_install:
 # Install Google AppEngine Python SDK.
 # Not installed in the LIB_DIR to avoid include it in the deploy.
-- wget https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.25.zip -nv
-- unzip -q google_appengine_1.9.25.zip
+- wget https://storage.googleapis.com/appengine-sdks/featured/google_appengine_$GAE_SDK_VERSION.zip -nv
+- unzip -q google_appengine_$GAE_SDK_VERSION.zip
 - export GAE_PATH="$(pwd)/google_appengine"
 - export PYTHONPATH=$GAE_PATH:$PYTHONPATH
 - export PATH=$GAE_PATH:$PATH
