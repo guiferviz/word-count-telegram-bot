@@ -1,27 +1,46 @@
 
-# Warning! GAE SDK folder needs to be on the pythonpath.
-import dev_appserver
-
-# Fix the sys.path to include GAE extra paths.
-dev_appserver.fix_sys_path()
-
-from google.appengine.ext import testbed
-
-# This import adds libraries in libs to the path.
-import main
-
-
-# NORMAL IMPORTS
 
 import logging
 import os
+import sys
 import unittest
+
+
+# Folder of the app to tests.
+APP_DIR = os.path.join(os.path.dirname(__file__), 'app')
+# Folder where test will be search.
+TEST_DIR = os.path.join(os.path.dirname(__file__), 'tests')
+
+
+##########################################################
+# WARNING! GAE SDK folder needs to be on the PYTHONPATH. #
+##########################################################
+def fix_path():
+    """
+    Fix system path to import all GAE and app files during tests.
+    """
+    # Warning! GAE SDK folder needs to be on the PYTHONPATH.
+    import dev_appserver
+
+    # Fix the sys.path to include GAE extra paths.
+    dev_appserver.fix_sys_path()
+
+    # Adds app dir to the path.
+    sys.path = [APP_DIR] + sys.path
+
+    # This import adds libraries in libs to the path.
+    import main
+
+fix_path()
+#######################################################
+# Now we can import everything... ok, 'everything' ;) #
+#######################################################
 
 import webtest
 
+from google.appengine.ext import testbed
 
-# Folder where test will be search.
-TEST_DIR = os.path.join(os.path.dirname(__file__), 'tests')
+import main
 
 
 class AppEngineTestBase(unittest.TestCase):
@@ -33,6 +52,7 @@ class AppEngineTestBase(unittest.TestCase):
         # Create and activate Testbed to moock AppEngine APIs.
         self.testbed = testbed.Testbed()
         self.testbed.activate()
+        # TODO: mock services with self.testbed.init_X_stub()
         # Create app for testing handlers.
         self.testapp = webtest.TestApp(main.app)
         # Not showing logging.
